@@ -1,0 +1,563 @@
+/* ============================================================
+   mobile-mirror panel styles (mm- prefix to avoid host clashes).
+   Colors map to the host app's real theme variables, with
+   light-theme-friendly fallbacks.
+   ============================================================ */
+
+.mm-root {
+  --mm-border: var(--color-border-weak-base, rgba(128, 128, 128, 0.22));
+  --mm-text: var(--color-text-base, #1f2329);
+  --mm-muted: var(--color-text-weak, #6b7280);
+  --mm-faint: var(--color-text-weak, #9aa0a6);
+  --mm-danger: var(--color-fail, #d92d20);
+  --mm-success: var(--color-pass, #12b76a);
+  --mm-warning: var(--color-orange, #e0a23a);
+  --mm-bg: var(--color-background-base, #ffffff);
+  --mm-surface: var(--color-surface-base, rgba(128, 128, 128, 0.08));
+  --mm-surface-strong: var(--color-surface-raised-base, rgba(128, 128, 128, 0.14));
+  --mm-primary: var(--color-blue-primary, #2563eb);
+  --mm-radius: 12px;
+  --mm-ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 12px 12px 16px;
+  box-sizing: border-box;
+  color: var(--mm-text);
+  background:
+    radial-gradient(120% 60% at 50% -10%, color-mix(in srgb, var(--mm-primary) 8%, transparent), transparent 60%);
+  font-size: 13px;
+}
+
+.mm-root::-webkit-scrollbar { width: 8px; }
+.mm-root::-webkit-scrollbar-thumb {
+  background: var(--mm-surface-strong);
+  border-radius: 8px;
+}
+.mm-root::-webkit-scrollbar-track { background: transparent; }
+
+/* ---------- Header ---------- */
+.mm-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 0 0 auto;
+}
+.mm-device-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  display: grid;
+  place-items: center;
+  background: var(--mm-surface);
+  color: var(--mm-muted);
+  flex: 0 0 auto;
+}
+.mm-title-block {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+.mm-title-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.mm-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+  background: var(--mm-faint);
+}
+.mm-status-dot[data-on="true"] {
+  background: var(--mm-success);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--mm-success) 18%, transparent);
+}
+
+/* Device name doubles as the device picker (transparent select + chevron). */
+.mm-device-picker {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+  max-width: 100%;
+}
+.mm-device-select {
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  border: none;
+  outline: none;
+  margin: 0;
+  padding: 0 18px 0 0;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  color: var(--mm-text);
+  max-width: 100%;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+.mm-device-picker > svg {
+  position: absolute;
+  right: 0;
+  pointer-events: none;
+  color: var(--mm-muted);
+  flex: 0 0 auto;
+}
+.mm-device-select:hover { color: var(--mm-text); }
+
+.mm-subtitle {
+  font-size: 11.5px;
+  color: var(--mm-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.mm-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  flex: 0 0 auto;
+  color: var(--mm-faint);
+  background: var(--mm-surface);
+}
+.mm-live[data-live="true"] {
+  color: var(--mm-success);
+  background: color-mix(in srgb, var(--mm-success) 14%, transparent);
+}
+.mm-live[data-live="true"]::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--mm-success);
+  animation: mm-pulse 1.6s ease-in-out infinite;
+}
+@keyframes mm-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.35; transform: scale(0.8); }
+}
+
+/* ---------- Error banner ---------- */
+.mm-error {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  padding: 9px 11px;
+  border-radius: 10px;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--mm-danger);
+  background: color-mix(in srgb, var(--mm-danger) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--mm-danger) 30%, transparent);
+  flex: 0 0 auto;
+}
+
+/* ---------- Mode switch (stream / screenshot) ---------- */
+.mm-mode {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  padding: 4px;
+  border-radius: 10px;
+  background: var(--mm-surface);
+  flex: 0 0 auto;
+}
+.mm-mode-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 34px;
+  border: none;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--mm-muted);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.mm-mode-btn:hover:not(:disabled) { color: var(--mm-text); }
+.mm-mode-btn[data-active="true"] {
+  background: var(--mm-surface-strong);
+  color: var(--mm-text);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+.mm-mode-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ---------- Phone body / stage ---------- */
+.mm-stage {
+  display: flex;
+  justify-content: center;
+  padding: 6px 2px 2px;
+  flex: 0 0 auto;
+}
+.mm-phone {
+  position: relative;
+  width: 100%;
+  max-width: 308px;
+  padding: 11px 10px 12px;
+  border-radius: 34px;
+  background:
+    linear-gradient(145deg, #3a3d44 0%, #1d1f24 28%, #141519 60%, #2a2d33 100%);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.08) inset,
+    0 -1px 0 rgba(0, 0, 0, 0.55) inset,
+    0 22px 44px -18px rgba(0, 0, 0, 0.55),
+    0 8px 18px -10px rgba(0, 0, 0, 0.45);
+  transition: max-width 0.25s var(--mm-ease), border-radius 0.25s var(--mm-ease);
+}
+.mm-phone::before,
+.mm-phone::after {
+  content: "";
+  position: absolute;
+  background: linear-gradient(90deg, #26282d, #3d4047, #23252a);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+.mm-phone::before {
+  right: -3px;
+  top: 118px;
+  width: 3px;
+  height: 58px;
+  border-radius: 0 3px 3px 0;
+}
+.mm-phone::after {
+  left: -3px;
+  top: 96px;
+  width: 3px;
+  height: 88px;
+  border-radius: 3px 0 0 3px;
+}
+.mm-screen-frame {
+  position: relative;
+  border-radius: 25px;
+  padding: 8px;
+  background: linear-gradient(180deg, #050506, #0d0e10);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.05),
+    0 2px 10px rgba(0, 0, 0, 0.6) inset;
+  overflow: hidden;
+}
+.mm-screen {
+  position: relative;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  aspect-ratio: 9 / 20;
+  transition: aspect-ratio 0.25s var(--mm-ease);
+}
+/* Landscape form factor (real-time stream follows device rotation). */
+.mm-screen[data-landscape="true"] {
+  aspect-ratio: 20 / 9;
+  border-radius: 14px;
+}
+.mm-phone[data-landscape="true"] {
+  max-width: 100%;
+  padding: 10px 14px;
+  border-radius: 28px;
+}
+.mm-phone[data-landscape="true"]::before {
+  right: auto;
+  left: 96px;
+  top: -3px;
+  width: 58px;
+  height: 3px;
+  border-radius: 3px 3px 0 0;
+}
+.mm-phone[data-landscape="true"]::after {
+  left: auto;
+  right: 80px;
+  top: -3px;
+  width: 88px;
+  height: 3px;
+  border-radius: 3px 3px 0 0;
+}
+.mm-shot {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  touch-action: none;
+}
+.mm-canvas {
+  background: #000;
+}
+.mm-hint {
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  z-index: 5;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 10.5px;
+  color: rgba(255, 255, 255, 0.82);
+  background: rgba(0, 0, 0, 0.45);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.mm-screen:hover .mm-hint { opacity: 1; }
+
+/* ---------- Overlays (loading / empty / locked) ---------- */
+.mm-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-align: center;
+  padding: 18px;
+  color: var(--mm-muted);
+  background: rgba(0, 0, 0, 0.55);
+}
+.mm-overlay-icon {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background: var(--mm-surface-strong);
+  color: var(--mm-text);
+}
+.mm-overlay-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--mm-text);
+}
+.mm-overlay-sub {
+  font-size: 11.5px;
+  color: var(--mm-muted);
+  max-width: 220px;
+}
+.mm-spinner {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2.5px solid var(--mm-surface-strong);
+  border-top-color: var(--mm-primary);
+  animation: mm-spin 0.8s linear infinite;
+}
+@keyframes mm-spin { to { transform: rotate(360deg); } }
+.mm-wake-btn {
+  margin-top: 4px;
+  height: 34px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 9px;
+  background: var(--mm-primary);
+  color: #fff;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+}
+.mm-wake-btn:hover { filter: brightness(1.08); }
+
+/* Rotation hint shown in screenshot mode when the device is landscape. */
+.mm-rotate-tip {
+  position: absolute;
+  left: 50%;
+  bottom: 12px;
+  transform: translateX(-50%);
+  z-index: 7;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: calc(100% - 24px);
+  padding: 7px 12px;
+  border: 1px solid var(--mm-primary);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--mm-primary) 16%, var(--mm-bg));
+  color: var(--mm-primary);
+  font-size: 11.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.mm-rotate-tip:hover { filter: brightness(1.08); }
+
+/* ---------- Bottom controls ---------- */
+.mm-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 0 0 auto;
+}
+.mm-nav {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.mm-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 38px;
+  border: 1px solid var(--mm-border);
+  border-radius: 10px;
+  background: var(--mm-surface);
+  color: var(--mm-text);
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.mm-nav-btn:hover:not(:disabled) { background: var(--mm-surface-strong); }
+.mm-nav-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.mm-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.mm-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--mm-border);
+  border-radius: 9px;
+  background: var(--mm-surface);
+  color: var(--mm-muted);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.mm-action-btn:hover:not(:disabled) {
+  color: var(--mm-text);
+  background: var(--mm-surface-strong);
+}
+.mm-action-btn[data-pressed="true"] {
+  color: var(--mm-primary);
+  border-color: color-mix(in srgb, var(--mm-primary) 45%, transparent);
+}
+.mm-action-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* ---------- Text input row ---------- */
+.mm-text-row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.mm-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 34px;
+  padding: 0 11px;
+  border-radius: 9px;
+  border: 1px solid var(--mm-border);
+  background: var(--mm-surface);
+  color: var(--mm-text);
+  font-size: 12.5px;
+  outline: none;
+  transition: border-color 0.2s var(--mm-ease), background 0.2s var(--mm-ease);
+}
+.mm-input::placeholder { color: var(--mm-faint); }
+.mm-input:focus-visible { border-color: var(--mm-primary); }
+.mm-input:disabled { opacity: 0.55; cursor: not-allowed; }
+.mm-send {
+  flex: 0 0 auto;
+  min-width: 58px;
+  height: 34px;
+  border: 0;
+  border-radius: 9px;
+  background: var(--mm-primary);
+  color: #fff;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.mm-send:hover:not(:disabled) { filter: brightness(1.08); }
+.mm-send:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* ---------- Auto-refresh switch (screenshot mode only) ---------- */
+.mm-switch-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+.mm-switch-row input { position: absolute; opacity: 0; pointer-events: none; }
+.mm-switch {
+  position: relative;
+  width: 40px;
+  height: 23px;
+  border-radius: 999px;
+  background: var(--mm-surface-strong);
+  transition: background 0.2s var(--mm-ease);
+  flex: 0 0 auto;
+}
+.mm-switch::after {
+  content: "";
+  position: absolute;
+  top: 2.5px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.2s var(--mm-ease);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+.mm-switch-row input:checked + .mm-switch { background: var(--mm-primary); }
+.mm-switch-row input:checked + .mm-switch::after { transform: translateX(16px); }
+.mm-switch-copy { display: flex; flex-direction: column; gap: 1px; }
+.mm-switch-title { font-size: 12.5px; font-weight: 600; color: var(--mm-text); }
+.mm-switch-desc { font-size: 11px; color: var(--mm-muted); }
+
+/* ---------- Diagnostics ---------- */
+.mm-diag {
+  margin: 0;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 10.5px;
+  line-height: 1.5;
+  color: var(--mm-faint);
+  word-break: break-all;
+  flex: 0 0 auto;
+}
+.mm-diag[data-error="true"] { color: var(--mm-danger); }
+
+/* ---------- Narrow panel ---------- */
+@media (max-width: 340px) {
+  .mm-root { padding-left: 9px; padding-right: 9px; }
+  .mm-phone { max-width: none; border-radius: 28px; }
+  .mm-action-btn { padding: 0 6px; font-size: 11.5px; }
+}
+
+/* ---------- Respect reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .mm-root,
+  .mm-live::before,
+  .mm-spinner,
+  .mm-phone,
+  .mm-screen { animation: none; transition: none; }
+}
+
